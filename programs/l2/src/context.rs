@@ -18,7 +18,7 @@ use switchboard_solana::{
 pub struct InitGlobal<'info> {
     // RANDOMNESS PROGRAM ACCOUNTS
     #[account(
-    init,
+    init_if_needed,
     seeds = [GLOBAL_SEED],
     bump,
     payer = payer,

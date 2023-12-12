@@ -1,7 +1,6 @@
 use crate::*;
 
 pub const GLOBAL_SEED: &[u8] = b"global";
-pub const STAKE_SEED: &[u8] = b"stake";
 pub const HOURLY_SLOTS: u16 = 9000; // ~1 hour at 400 ms/slot
 pub const MAX_RAND_VALUE: u8 = 255;
 
@@ -28,6 +27,3 @@ pub struct Global {
     /// The max transfer fee in basis point.
     pub current_transfer_fee_bp: u16, // ===============> 0 - 60%, 10% Interval
 }
-
-// HOLDERS STAKE => Staking include transfer fee too
-// DEGEN SHILL & SPECULATE

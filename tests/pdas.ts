@@ -2,13 +2,9 @@ import * as anchor from "@coral-xyz/anchor";
 import { Program } from "@coral-xyz/anchor";
 import { L2 } from "../target/types/l2";
 import { PublicKey } from "@solana/web3.js";
+
 import {
-  createAssociatedTokenAccount,
-  createMint,
-  mintTo,
-} from "@solana/spl-token";
-import {
-  BootstrappedAttestationQueue,
+  AttestationQueueAccount,
   FunctionAccount,
 } from "@switchboard-xyz/solana.js";
 
@@ -18,7 +14,7 @@ export interface IPubkeys {
   user1: anchor.web3.Keypair;
 }
 export interface ISwitchboardObj {
-  switchboard: BootstrappedAttestationQueue;
+  switchboard: AttestationQueueAccount;
   switchboardFunction: FunctionAccount;
   switchboardRequestKeypair: anchor.web3.Keypair;
 }

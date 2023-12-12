@@ -31,8 +31,7 @@ export const setupTestEnv = async (
         switchboard: sbObj.switchboard.program.attestationProgramId,
         switchboardState:
           sbObj.switchboard.program.attestationProgramState.publicKey,
-        switchboardAttestationQueue:
-          sbObj.switchboard.attestationQueue.publicKey,
+        switchboardAttestationQueue: sbObj.switchboard.publicKey,
         switchboardFunction: sbObj.switchboardFunction.publicKey,
         switchboardRequest: sbObj.switchboardRequestKeypair.publicKey,
         switchboardRequestEscrow: anchor.utils.token.associatedAddress({
@@ -66,7 +65,7 @@ export const setupTestEnv = async (
   );
   assert.equal(
     globalData.attestationQueue.toString(),
-    sbObj.switchboard.attestationQueue.publicKey.toString()
+    sbObj.switchboard.publicKey.toString()
   );
   assert.equal(globalData.switchboardRequest, null);
 };

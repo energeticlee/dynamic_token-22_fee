@@ -14,3 +14,7 @@ tokio = "^1"
 futures = "0.3"
 switchboard-solana = { version = "=0.29.73", features = ["macros"] }
 bytemuck = "1.13"
+
+[[test]]
+name = "params"
+path = "src/params.rs"

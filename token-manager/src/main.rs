@@ -9,9 +9,12 @@ pub use params::*;
 #[switchboard_function]
 pub async fn sb_function(runner: FunctionRunner, params: Vec<u8>) -> Result<Vec<Instruction>, SbFunctionError> {
     // parse and validate user provided request params
-    let params: ContainerParams = ContainerParams::decode(&params).map_err(|_| Error::ArgParseFail)?;
+    println!("incoming param is: {:?}", params);
+    let data: ContainerParams = ContainerParams::decode(&params).map_err(|_| Error::ArgParseFail)?;
     // Generate our random result
-    let random_result = generate_randomness(0, params.max_value);
+    println!("max value is: {}", data.max_value);
+    let random_result = generate_randomness(1, data.max_value);
+    println!("random number is: {}", random_result);
     let mut random_bytes = random_result.to_le_bytes().to_vec();
 
     // IXN DATA:
@@ -27,18 +30,18 @@ pub async fn sb_function(runner: FunctionRunner, params: Vec<u8>) -> Result<Vec<
     // 2. Switchboard Function
     // 3. Switchboard Function Request
     Ok(vec![Instruction {
-        program_id: params.program_id,
+        program_id: data.program_id,
         data: ixn_data,
         accounts: vec![
-            AccountMeta::new(params.global, true), // Global
-            AccountMeta::new(params.mint, false), // Mint
+            AccountMeta::new(data.global, true), // Global
+            AccountMeta::new_readonly(data.mint, false), // Mint
             AccountMeta::new(runner.signer, true), // Enclave signer
             AccountMeta::new_readonly(runner.switchboard, false), // Switchboard
             AccountMeta::new_readonly(runner.switchboard_state, false), // Switchboard_state
             AccountMeta::new_readonly(runner.attestation_queue.unwrap(), false), // Switchboard_attestation_queue
             AccountMeta::new_readonly(runner.function, true), // switchboard_function
             AccountMeta::new_readonly(runner.function_request_key.unwrap(), false), // Switchboard_request
-            AccountMeta::new_readonly(runner.payer, true), // switchboard_request_escrow 
+            AccountMeta::new(runner.payer, true), // switchboard_request_escrow 
             AccountMeta::new_readonly(anchor_spl::token::spl_token::native_mint::ID, false), // Switchboard_mint == Native SOL
             AccountMeta::new_readonly(anchor_spl::token::ID, false), // TID
             AccountMeta::new_readonly(anchor_spl::token_2022::ID, false), // TID_22

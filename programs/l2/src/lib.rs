@@ -17,7 +17,7 @@ pub use state::*;
 pub mod utils;
 pub use utils::*;
 
-declare_id!("F9drLzcivmLJNaSMtiVtmc2aewgVjkbjg5DREqjndS7A");
+declare_id!("auULn3TunUFz5mvM1VSLUT184oAApgnEsLmqZrVyUAP");
 // WITHHELD_WITHDRAW & TRANSFER_FEE AUTHORITY REQUIRED TO BE GLOBAL PDA
 // MINT MANAGER AUTHORITY CONSTRAINT CHECK TO UPDATE
 
@@ -28,7 +28,7 @@ pub mod l2 {
 
     // INITIALIZE GLOBAL, MINT REQUIRE TRANSFER_FEE & MINT AUTHORITY
     pub fn init_global(ctx: Context<InitGlobal>, hour_to_next_update: u8) -> Result<()> {
-        // CHECK TOKEN 22 MINT
+        // TODO: CHECK MINT
         let global = &mut ctx.accounts.global;
         let request_params = format!(
             "PID={},MAX_VALUE={},GLOBAL={},MINT={},",
@@ -187,18 +187,19 @@ pub mod l2 {
         Ok(())
     }
 
-    pub fn trigger_update(ctx: Context<TriggerUpdate>, result: u8) -> anchor_lang::Result<()> {
+    pub fn trigger_update(ctx: Context<TriggerUpdate>, result: u64) -> anchor_lang::Result<()> {
         let global = &mut ctx.accounts.global;
+        let result8 = result as u8;
 
         msg!("CRANK TRIGGER");
-        if !(0..MAX_RAND_VALUE).contains(&result) {
+        if !(0..MAX_RAND_VALUE).contains(&result8) {
             return Err(error!(RandomnessRequestError::RandomResultOutOfBounds));
         }
 
         let current_slot = Clock::get()?.slot as u64;
 
         // Update next_update_slot & update hour_to_next_update
-        let hour_to_next_update = (((current_slot + result as u64) % 24) + 1) as u8;
+        let hour_to_next_update = (((current_slot + result8 as u64) % 24) + 1) as u8;
         let new_next_update = current_slot + (HOURLY_SLOTS * hour_to_next_update as u16) as u64;
         global.hour_to_next_update = hour_to_next_update;
         global.next_update_slot = new_next_update;

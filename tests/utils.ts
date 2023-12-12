@@ -1,37 +1,26 @@
 import * as anchor from "@coral-xyz/anchor";
 import { Program } from "@coral-xyz/anchor";
 import {
-  clusterApiUrl,
   sendAndConfirmTransaction,
   Connection,
   Keypair,
   SystemProgram,
   Transaction,
-  LAMPORTS_PER_SOL,
   PublicKey,
 } from "@solana/web3.js";
 import {
   createAssociatedTokenAccount,
-  createMint,
   mintTo,
   ExtensionType,
   createInitializeMintInstruction,
-  createAccount,
   getMintLen,
   TOKEN_2022_PROGRAM_ID,
   createInitializeTransferFeeConfigInstruction,
-  harvestWithheldTokensToMint,
-  transferCheckedWithFee,
-  withdrawWithheldTokensFromAccounts,
-  withdrawWithheldTokensFromMint,
 } from "@solana/spl-token";
-import { RawBuffer } from "@switchboard-xyz/common";
 import {
   AttestationQueueAccount,
-  BootstrappedAttestationQueue,
   FunctionAccount,
   SwitchboardProgram,
-  parseRawBuffer,
 } from "@switchboard-xyz/solana.js";
 import { IPubkeys } from "./pdas";
 import { L2 } from "../target/types/l2";
@@ -89,27 +78,44 @@ export const createTransferFeeMint = async (
   return mint;
 };
 
+// export async function loadSwitchboard(
+//   provider: anchor.AnchorProvider,
+//   MRENCLAVE: RawBuffer,
+//   recentSlot?: number
+// ): Promise<[BootstrappedAttestationQueue, FunctionAccount]> {
+//   const switchboardProgram = await SwitchboardProgram.fromProvider(provider);
+  // const switchboard = await AttestationQueueAccount.bootstrapNewQueue(
+//     switchboardProgram
+//   );
+
+//   const [switchboardFunction] =
+//     await switchboard.attestationQueue.account.createFunction({
+//       name: "random_transfer_fee",
+//       containerRegistry: "dockerhub",
+//       container: "energeticlee/example",
+//       version: "latest",
+//       mrEnclave: parseRawBuffer(MRENCLAVE, 32),
+//       recentSlot,
+//     });
+
+//   return [switchboard, switchboardFunction];
+// }
 export async function loadSwitchboard(
-  provider: anchor.AnchorProvider,
-  MRENCLAVE: RawBuffer,
-  recentSlot?: number
-): Promise<[BootstrappedAttestationQueue, FunctionAccount]> {
+  provider: anchor.AnchorProvider
+): Promise<[AttestationQueueAccount, FunctionAccount]> {
   const switchboardProgram = await SwitchboardProgram.fromProvider(provider);
-  const switchboard = await AttestationQueueAccount.bootstrapNewQueue(
-    switchboardProgram
+
+  const switchboard = await AttestationQueueAccount.load(
+    switchboardProgram,
+    "CkvizjVnm2zA5Wuwan34NhVT3zFc7vqUyGnA6tuEF5aE"
   );
 
-  const [switchboardFunction] =
-    await switchboard.attestationQueue.account.createFunction({
-      name: "test function",
-      metadata: "this function handles XYZ for my protocol",
-      container: "energeticlee/example",
-      version: "latest",
-      mrEnclave: parseRawBuffer(MRENCLAVE, 32),
-      recentSlot,
-    });
+  const [functionAccount] = await FunctionAccount.load(
+    switchboardProgram,
+    "4JwNWzqoYVULs1ohHW72mFrCFz1vKmJkTuP72ZVUP2eX"
+  );
 
-  return [switchboard, switchboardFunction];
+  return [switchboard[0], functionAccount];
 }
 
 export const signAndSendTx = async (
@@ -139,15 +145,16 @@ export const signAndSendTx = async (
 export const envSetup = async (program: Program<L2>, pubkeys: IPubkeys) => {
   try {
     // AIRDROP SOL
-
+    console.log("TEST 1");
     const tx = new anchor.web3.Transaction();
-    await program.provider.connection.confirmTransaction(
-      await program.provider.connection.requestAirdrop(
-        pubkeys.globalOwner.publicKey,
-        1e9
-      )
-    );
+    // await program.provider.connection.confirmTransaction(
+    //   await program.provider.connection.requestAirdrop(
+    //     pubkeys.globalOwner.publicKey,
+    //     1e9
+    //   )
+    // );
 
+    console.log("TEST 2");
     const arr = Object.values(pubkeys).slice(1);
 
     for (let i = 1; i < arr.length; i++) {
@@ -159,8 +166,10 @@ export const envSetup = async (program: Program<L2>, pubkeys: IPubkeys) => {
       tx.add(ix);
     }
 
+    console.log("TEST 3");
     await signAndSendTx(program.provider.connection, tx, pubkeys.globalOwner);
 
+    console.log("TEST 4");
     // TODO: CREATE TOKEN22 MINT, set GLOBAL to AUTHORITY
     const TRANSFER_FEE = 100_00; // 100%
     const mint = await createTransferFeeMint(
@@ -174,6 +183,7 @@ export const envSetup = async (program: Program<L2>, pubkeys: IPubkeys) => {
       pubkeys.globalPda
     );
 
+    console.log("TEST 5");
     // MINT 10,000 TO ALL pubkeys
     for (let i = 0; i < arr.length; i++) {
       const ata = await createAssociatedTokenAccount(
@@ -185,6 +195,7 @@ export const envSetup = async (program: Program<L2>, pubkeys: IPubkeys) => {
         TOKEN_2022_PROGRAM_ID
       );
 
+      console.log("TEST 6");
       // MINT 10,000
       await mintTo(
         program.provider.connection,
@@ -199,6 +210,7 @@ export const envSetup = async (program: Program<L2>, pubkeys: IPubkeys) => {
       );
     }
 
+    console.log("TEST 7");
     // RETURN MINT
     return mint;
   } catch (error) {
