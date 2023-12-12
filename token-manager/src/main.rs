@@ -33,13 +33,13 @@ pub async fn sb_function(runner: FunctionRunner, params: Vec<u8>) -> Result<Vec<
         program_id: data.program_id,
         data: ixn_data,
         accounts: vec![
-            AccountMeta::new(data.global, true), // Global
-            AccountMeta::new_readonly(data.mint, false), // Mint
+            AccountMeta::new(data.global, false), // Global
+            AccountMeta::new(data.mint, false), // Mint
             AccountMeta::new(runner.signer, true), // Enclave signer
             AccountMeta::new_readonly(runner.switchboard, false), // Switchboard
             AccountMeta::new_readonly(runner.switchboard_state, false), // Switchboard_state
             AccountMeta::new_readonly(runner.attestation_queue.unwrap(), false), // Switchboard_attestation_queue
-            AccountMeta::new_readonly(runner.function, true), // switchboard_function
+            AccountMeta::new(runner.function, true), // switchboard_function
             AccountMeta::new_readonly(runner.function_request_key.unwrap(), false), // Switchboard_request
             AccountMeta::new(runner.payer, true), // switchboard_request_escrow 
             AccountMeta::new_readonly(anchor_spl::token::spl_token::native_mint::ID, false), // Switchboard_mint == Native SOL

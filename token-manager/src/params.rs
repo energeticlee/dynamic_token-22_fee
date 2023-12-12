@@ -40,12 +40,12 @@ impl ContainerParams {
         }
         if global == Pubkey::default() {
             return Err(SbError::CustomMessage(
-                "PID cannot be undefined".to_string(),
+                "global cannot be undefined".to_string(),
             ));
         }
         if mint == Pubkey::default() {
             return Err(SbError::CustomMessage(
-                "PID cannot be undefined".to_string(),
+                "mint cannot be undefined".to_string(),
             ));
         }
         if max_value == 0 {

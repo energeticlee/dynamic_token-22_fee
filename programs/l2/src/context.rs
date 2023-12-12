@@ -88,7 +88,7 @@ pub struct TriggerUpdate<'info> {
       constraint = global.next_update_slot >= Clock::get()?.slot as u64 @ RandomnessRequestError::RequestNotReady
     )]
     pub global: Box<Account<'info, Global>>,
-    /// CHECK:
+    #[account(mut)]
     pub mint: AccountInfo<'info>,
 
     pub enclave_signer: Signer<'info>,
