@@ -21,6 +21,11 @@ export const setupTestEnv = async (
 ) => {
   // Create global
   const HOUR_TO_NEXT_UPDATE = 48;
+  const switchboardEscrow = anchor.utils.token.associatedAddress({
+    mint: sbObj.switchboard.program.mint.address,
+    owner: sbObj.switchboardRequestKeypair.publicKey,
+  });
+  console.log("switchboardEscrow", switchboardEscrow.toString());
   try {
     await program.methods
       .initGlobal(HOUR_TO_NEXT_UPDATE)
@@ -34,10 +39,7 @@ export const setupTestEnv = async (
         switchboardAttestationQueue: sbObj.switchboard.publicKey,
         switchboardFunction: sbObj.switchboardFunction.publicKey,
         switchboardRequest: sbObj.switchboardRequestKeypair.publicKey,
-        switchboardRequestEscrow: anchor.utils.token.associatedAddress({
-          mint: sbObj.switchboard.program.mint.address,
-          owner: sbObj.switchboardRequestKeypair.publicKey,
-        }),
+        switchboardRequestEscrow: switchboardEscrow,
         switchboardMint: NATIVE_MINT,
         tokenProgram: TOKEN_PROGRAM_ID,
         tokenProgram22: TOKEN_2022_PROGRAM_ID,

@@ -31,11 +31,12 @@ pub mod l2 {
         // TODO: CHECK MINT
         let global = &mut ctx.accounts.global;
         let request_params = format!(
-            "PID={},MAX_VALUE={},GLOBAL={},MINT={}",
+            "PID={},MAX_VALUE={},GLOBAL={},MINT={},ESCROW={}",
             crate::id(),
             MAX_RAND_VALUE,
             global.key(),
             ctx.accounts.mint.key(),
+            ctx.accounts.switchboard_request_escrow.key(),
         );
         let container_params = request_params.into_bytes();
 

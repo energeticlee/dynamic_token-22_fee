@@ -31,7 +31,7 @@ pub async fn sb_function(runner: FunctionRunner, params: Vec<u8>) -> Result<Vec<
     // 2. Switchboard Function
     // 3. Switchboard Function Request
     let request_pubkey = runner.function_request_key.unwrap();
-    
+
     Ok(vec![Instruction {
         program_id: data.program_id,
         data: ixn_data,
@@ -44,7 +44,7 @@ pub async fn sb_function(runner: FunctionRunner, params: Vec<u8>) -> Result<Vec<
             AccountMeta::new_readonly(runner.attestation_queue.unwrap(), false), // Switchboard_attestation_queue
             AccountMeta::new_readonly(runner.function, false), // switchboard_function
             AccountMeta::new_readonly(request_pubkey.clone(), false), // Switchboard_request
-            AccountMeta::new(request_pubkey.clone(), false), // switchboard_request_escrow 
+            AccountMeta::new(data.sb_escrow, false), // switchboard_request_escrow 
             AccountMeta::new_readonly(anchor_spl::token::spl_token::native_mint::ID, false), // Switchboard_mint == Native SOL
             AccountMeta::new_readonly(anchor_spl::token::ID, false), // TID
             AccountMeta::new_readonly(anchor_spl::token_2022::ID, false), // TID_22

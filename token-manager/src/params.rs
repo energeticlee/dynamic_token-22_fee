@@ -5,7 +5,7 @@ pub struct ContainerParams {
     pub max_value: u8,
     pub global: Pubkey,
     pub mint: Pubkey,
-    // pub sb_escrow: Pubkey,
+    pub sb_escrow: Pubkey,
 }
 
 impl ContainerParams {
@@ -16,7 +16,7 @@ impl ContainerParams {
         let mut max_value: u8 = 255;
         let mut global: Pubkey = Pubkey::default();
         let mut mint: Pubkey = Pubkey::default();
-        // let mut sb_escrow: Pubkey = Pubkey::default();
+        let mut sb_escrow: Pubkey = Pubkey::default();
 
         for env_pair in params.split(',') {
             let pair: Vec<&str> = env_pair.splitn(2, '=').collect();
@@ -26,7 +26,7 @@ impl ContainerParams {
                     "MAX_VALUE" => max_value = pair[1].parse::<u8>().unwrap(),
                     "GLOBAL" => global = Pubkey::from_str(pair[1]).unwrap(),
                     "MINT" => mint = Pubkey::from_str(pair[1]).unwrap(),
-                    // "SB_ESCROW" => sb_escrow = Pubkey::from_str(pair[1]).unwrap(),
+                    "ESCROW" => sb_escrow = Pubkey::from_str(pair[1]).unwrap(),
                     _ => {}
                 }
             }
@@ -35,7 +35,7 @@ impl ContainerParams {
         println!("max_value: {:?}", max_value);
         println!("global: {:?}", global);
         println!("mint: {:?}", mint);
-        // println!("sb_escrow: {:?}", sb_escrow);
+        println!("escrow: {:?}", sb_escrow);
 
         if program_id == Pubkey::default() {
             return Err(SbError::CustomMessage(
@@ -57,18 +57,18 @@ impl ContainerParams {
                 "MAX_VALUE must be greater than 0".to_string(),
             ));
         }
-        // if sb_escrow == Pubkey::default() {
-        //     return Err(SbError::CustomMessage(
-        //         "sb_escrow cannot be undefined".to_string(),
-        //     ));
-        // }
+        if sb_escrow == Pubkey::default() {
+            return Err(SbError::CustomMessage(
+                "sb_escrow cannot be undefined".to_string(),
+            ));
+        }
 
         Ok(Self {
             program_id,
             max_value,
             global,
             mint,
-            // sb_escrow,
+            sb_escrow,
         })
     }
 }
