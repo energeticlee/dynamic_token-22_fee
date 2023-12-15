@@ -191,7 +191,7 @@
     protobufjs "^7.2.4"
     yaml "^2.2.1"
 
-"@switchboard-xyz/solana.js@^3.1.1":
+"@switchboard-xyz/solana.js@^3.1.5":
   version "3.1.5"
   resolved "https://registry.yarnpkg.com/@switchboard-xyz/solana.js/-/solana.js-3.1.5.tgz#b754d1ba2ccee24586d9f14fc8eaf86cd9195262"
   integrity sha512-bKNXBw5g7zBbIfLqDim9gAr0KKKNgw3/KgRsVa5/pl1/2JsDPX8dpuv7H0S0p01CaUryu32Lg1mxjN+qznupAg==

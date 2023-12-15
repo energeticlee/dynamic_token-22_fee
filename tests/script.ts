@@ -53,7 +53,7 @@ export const setupTestEnv = async (
 
   assert.equal(+globalData.hourToNextUpdate, HOUR_TO_NEXT_UPDATE);
   assert.equal(+globalData.currentTransferFeeBp, 100_00);
-  assert.equal(globalData.mint.toString(), mint.toString());
+  assert.equal(globalData.mint.toString(), mint.toString(), "123");
 
   assert.equal(
     globalData.switchboardFunction.toString(),
@@ -61,40 +61,13 @@ export const setupTestEnv = async (
   );
   assert.equal(
     globalData.attestationProgramState.toString(),
-    sbObj.switchboard.program.attestationProgramState.publicKey.toString()
+    sbObj.switchboard.program.attestationProgramState.publicKey.toString(),
+    "3221"
   );
   assert.equal(
     globalData.attestationQueue.toString(),
-    sbObj.switchboard.publicKey.toString()
+    sbObj.switchboard.publicKey.toString(),
+    "888"
   );
   assert.equal(globalData.switchboardRequest, null);
-};
-
-export const triggerUpdate = async (
-  program: anchor.Program<L2>,
-  mint: PublicKey,
-  pubkeys: IPubkeys
-) => {
-  // Create global
-  await program.methods
-    .triggerUpdate(123)
-    .accounts({
-      global: pubkeys.globalPda,
-      mint: mint, // ADD TOKEN22 MINT
-      enclaveSigner: pubkeys.globalOwner.publicKey,
-      switchboardMint: NATIVE_MINT,
-      tokenProgram: TOKEN_PROGRAM_ID,
-      tokenProgram22: TOKEN_2022_PROGRAM_ID,
-      associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
-    })
-    .signers([pubkeys.globalOwner])
-    .rpc();
-
-  const globalPda = getGlobalPda(program);
-  const globalData = await program.account.global.fetch(globalPda);
-
-  assert.equal(+globalData.currentTransferFeeBp, 0);
-  assert.equal(+globalData.hourToNextUpdate, 0);
-  assert.equal(globalData.mint.toString(), "0.toString()");
-  assert.equal(+globalData.nextUpdateSlot, 0);
 };

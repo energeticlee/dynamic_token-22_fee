@@ -88,8 +88,9 @@ pub struct TriggerUpdate<'info> {
       constraint = global.next_update_slot >= Clock::get()?.slot as u64 @ RandomnessRequestError::RequestNotReady
     )]
     pub global: Box<Account<'info, Global>>,
+    /// CHECK:
     #[account(mut)]
-    pub mint: AccountInfo<'info>,
+    pub mint: Account<'info, Mint>,
 
     pub enclave_signer: Signer<'info>,
 
@@ -101,15 +102,20 @@ pub struct TriggerUpdate<'info> {
     pub switchboard_state: AccountLoader<'info, AttestationProgramState>,
     pub switchboard_attestation_queue: AccountLoader<'info, AttestationQueueAccountData>,
     /// CHECK: validated by Switchboard CPI
-    #[account(mut)]
+    #[account(
+      constraint = switchboard_function.load()?.validate_request(
+          &switchboard_request,
+          &enclave_signer.to_account_info()
+      )?
+  )]
     pub switchboard_function: AccountLoader<'info, FunctionAccountData>,
     /// CHECK: validated by Switchboard CPI
-    #[account(
-      constraint = switchboard_request.validate_signer(
-        &switchboard_function,
-        &enclave_signer.to_account_info()
-        )?
-      )]
+    // #[account(
+    //   constraint = switchboard_request.validate_signer(
+    //     &switchboard_function,
+    //     &enclave_signer.to_account_info()
+    //     )?
+    //   )]
     pub switchboard_request: Box<Account<'info, FunctionRequestAccountData>>,
     /// CHECK:
     #[account(

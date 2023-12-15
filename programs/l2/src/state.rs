@@ -2,7 +2,7 @@ use crate::*;
 
 pub const GLOBAL_SEED: &[u8] = b"global";
 pub const HOURLY_SLOTS: u16 = 9000; // ~1 hour at 400 ms/slot
-pub const MAX_RAND_VALUE: u8 = 255;
+pub const MAX_RAND_VALUE: u8 = 254;
 
 #[account]
 pub struct Global {

@@ -12,7 +12,8 @@ import { parseRawMrEnclave } from "@switchboard-xyz/common";
 import { envSetup, loadSwitchboard } from "./utils";
 import fs from "fs";
 import { L2 } from "../target/types/l2";
-import { SECRET_KEY } from "./delete";
+import dotenv from "dotenv";
+dotenv.config();
 
 describe("l2", () => {
   // Configure the client to use the local cluster.
@@ -32,7 +33,11 @@ describe("l2", () => {
   ) as anchor.Program<L2>;
 
   const TRANSFER_FEE = 100_00; // 100%
-  const globalOwner = anchor.web3.Keypair.generate();
+  //TODO: =====================================
+  const secretKey = Uint8Array.from(JSON.parse(process.env.SECRET_KEY!));
+  const globalOwner = anchor.web3.Keypair.fromSecretKey(secretKey);
+  //TODO: =====================================
+  // const globalOwner = anchor.web3.Keypair.generate();
   const user1 = anchor.web3.Keypair.generate();
   const user2 = anchor.web3.Keypair.generate();
   let mint: anchor.web3.PublicKey;
@@ -46,7 +51,7 @@ describe("l2", () => {
   };
 
   const MRENCLAVE = parseRawMrEnclave(
-    "0xe89b9949da4248f80264f6d0da95dcf14a203c4b44c7670719298e2cadec5ca2",
+    "0xd9e3bf1ca6a815200f0ab21bd57540c2f4131ff8bd1c08f3046375bc6f7f520d",
     true
   );
 
