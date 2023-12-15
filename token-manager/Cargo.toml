@@ -12,7 +12,7 @@ path = "src/main.rs"
 [dependencies]
 tokio = "^1"
 futures = "0.3"
-switchboard-solana = { version = "=0.29.73", features = ["macros"] }
+switchboard-solana = { version = "=0.29.75", features = ["macros"] }
 bytemuck = "1.13"
 
 [[test]]

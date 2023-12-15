@@ -4621,9 +4621,9 @@ dependencies = [
 
 [[package]]
 name = "switchboard-solana"
-version = "0.29.73"
+version = "0.29.75"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "3fcc0d6cfd8220c5d1a28593b801218274b35ac66bf2d6fdb563497cbd3f77a0"
+checksum = "973a27878d4be15913576887b0085b5f3e9d9370ef2bf989bf5ec87c5903afeb"
 dependencies = [
  "anchor-client",
  "anchor-lang",

@@ -2,6 +2,7 @@ use std::str::FromStr;
 
 pub use switchboard_solana::{get_ixn_discriminator, switchboard_function, sb_error};
 pub use switchboard_solana::prelude::*;
+use crate::solana_sdk::commitment_config::CommitmentConfig;
 
 mod params;
 pub use params::*;
